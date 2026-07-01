@@ -1,112 +1,1011 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>KealCrow Interactive — Coming Soon</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --gold: #d4af37;
-    --purple: #1a0b3e;
-  }
-  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  html, body { height: 100%; }
-  body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #050210;
-    color: white;
-    overflow-x: hidden;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(900px 600px at 50% -10%, #2a155c 0%, transparent 60%),
-      radial-gradient(1200px 800px at 50% 0%, #241055 0%, #1a0b3e 35%, #0a0418 75%);
-    z-index: -3;
-  }
-  .vignette {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%);
-    pointer-events: none;
-    z-index: -1;
-  }
-  .noise {
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.035;
-    mix-blend-mode: soft-light;
-    pointer-events: none;
-    z-index: -1;
-  }
-  #particles {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-  }
-  @keyframes breathe {
-    0%, 100% { opacity: 0.7; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.02); }
-  }
-  .coming-soon {
-    animation: breathe 3.5s ease-in-out infinite;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .fade-1 { animation: fadeUp 0.9s 0.1s both; }
-  .fade-2 { animation: fadeUp 0.9s 0.2s both; }
-  .fade-3 { animation: fadeUp 0.9s 0.3s both; }
-  .fade-4 { animation: fadeUp 0.9s 0.4s both; }
-  .gold-line {
-    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent);
-  }
-  .input-glow:focus {
-    box-shadow: 0 0 0 1px rgba(212,175,55,0.3), 0 0 24px rgba(212,175,55,0.15);
-  }
-</style>
-</head>
-<body class="min-h-screen flex flex-col">
-  <canvas id="particles"></canvas>
-  <div class="vignette"></div>
-  <div class="noise"></div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KealCrow Interactive</title>
+    <meta
+      name="description"
+      content="KealCrow is an early-stage atmospheric pixel-art universe by KealCrow Interactive."
+    />
+    <meta name="theme-color" content="#070909" />
+    <meta property="og:title" content="KealCrow Interactive" />
+    <meta
+      property="og:description"
+      content="A dark pixel-art universe where the forest remembers, and the crown is never silent."
+    />
+    <meta property="og:image" content="./copilot_image_1782744561621.jpeg" />
+    <meta property="og:type" content="website" />
 
-  <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-16 text-center">
-    <div class="w-full max-w-2xl mx-auto flex flex-col items-center">
-      
-      <!-- Logo -->
-      <div class="fade-1">
-        <img 
-          src="data:application/octet-stream;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIbGNtcwIQAABtbnRyUkdCIFhZWiAH4gADABQACQAOAB1hY3NwTVNGVAAAAABzYXdzY3RybAAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLWhhbmSdkQA9QICwPUB0LIGepSKOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAABxjcHJ0AAABDAAAAAx3dHB0AAABGAAAABRyWFlaAAABLAAAABRnWFlaAAABQAAAABRiWFlaAAABVAAAABRyVFJDAAABaAAAAGBnVFJDAAABaAAAAGBiVFJDAAABaAAAAGBkZXNjAAAAAAAAAAV1UkdCAAAAAAAAAAAAAAAAdGV4dAAAAABDQzAAWFlaIAAAAAAAAPNUAAEAAAABFslYWVogAAAAAAAAb6AAADjyAAADj1hZWiAAAAAAAABilgAAt4kAABjaWFlaIAAAAAAAACSgAAAPhQAAtsRjdXJ2AAAAAAAAACoAAAB8APgBnAJ1A4MEyQZOCBIKGAxiDvQRzxT2GGocLiBDJKwpai5+M+s5sz/WRldNNlR2XBdkHWyGdVZ+jYgskjacq6eMstu+mcrH12Xkd/H5////2wBDAAkGBwgHBgkICAgKCgkLDhcPDg0NDhwUFREXIh4jIyEeICAlKjUtJScyKCAgLj8vMjc5PDw8JC1CRkE6RjU7PDn/2wBDAQoKCg4MDhsPDxs5JiAmOTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTn/wAARCAQABAADASIAAhEBAxEB/8QAHAABAQADAQEBAQAAAAAAAAAAAAEGBwgFBAID/8QAWhABAAEDAwAFBQcNCgwGAgMAAAECAwQFBhEHEiExQRNRYXGBCBQikaGxshUXIzI3QlJic3TB0dIzNTZygpKTlKKzFiQ0RFNUVVZkg8LhJSZDRWPwRnWEhcP/xAAZAQEBAQEBAQAAAAAAAAAAAAAAAQIDBAX/xAAoEQEBAAICAgEEAQUBAQAAAAAAAQIRAzESIUEEEyJRMiMzUmFxYhT/2gAMAwEAAhEDEQA/ANHAAAAgsAAAoAAAASAIsAAAAAAAIgsAAAoAAAAAIgsABISKCAiiAKIAogChAAAKAAAAgoIgoCCgIKAgqAoAACAACCwKAAICwACAoiwCCgIKgKACCwAACgAgIAoCAACCwKAAoAASAACIAAgsCgAKAAAAAAAAAAACAAAAILAAAKAAAAAAAAAAAAAAAAAAAAAAASAIsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABygKIsAAAAAAAAAAAAAAAAAAAAACAigQABIoAIAAEhIIAAqKABAAAoAAAAAASAiKAIAAACgCgEgCAigCgAAAAAAAAABIAiiCKAKIpIgIsAACgAAAAAAAAABIAigIAQAAKAAAAAAAAAAASAICKIAoiwKASAgCKACAAAAoAoAAAAAAHKAqAIKAAEAACgAIAIoAqACALAIKgAAAAAAKAKAAAAASAICAAAAAAAAKAKIoIACgAAAAICgAAAEhIIsICKIsCgAAAAAAAAEgCLAAAAABIAgpIgIsgCLAoAAAAAABIAgIqKAgAAAAAKAKAAAAAAAAAAAAASAgCKACAAAAAAoAoACACKAKgAgACgCgAIAIAApICoLKCCooAIAAAAAAAAALAAAKAAAAASAgCAAKAKASAAIiwgCoAKBIoIsAAAASAICAAKAKAAAAAAEhIBKKIiwAoAASAIsAAiggAKgLAiCoAAAACgCgAAAAAAABIAigIgAAACwgCoAAAAAKAKgAgAAAAACgCgAAAAABIAikgiAAAAAAAAAAAAoAoAAAAAASAIsACACKBIoICAAALAEACiKSICLAAAoACACAAKAKAAAAAAAAEgIihIAAoAAAAAAAAACACAAAAAAKAKAAAAAAEgCCgiAAAALCAKgAAACwAACoAIAsAgqAAAoAoAAAAAACAACAALAgCgCgAIAIAAoAoAAAAAAAAAAAASEgCKIgLAIKgKAKAAAAAAACICwBAAoAAAAAAAAACACAsAAAoAABICAIoiwAEgIAAAAAAACgCgAAAAAAEgCAgAAAALAAAKAAAAAAgAgLAAAKgAgACgSKCLABISCAsCIAAAAACgCgAIAICwAACgAAECAAoAAAAAAAACCKAKAAAAAAAAASAICAAKAKAAAAAAAAAggACgCgAAEgEosCIKSASAIpICAALCAKEAoAAAAAAAAAAAAigiAACwAACgAAAAAAAIAIAAAAAAAAAAAAoEAACgAAAAAAAAAAAAAAAAAiCwAACgAAAAAAABIAiwAAAAAAAAABISAAIgAKAKAgKAACAoEiAiggAKAKAAAAAAEhIBKLIiAsAgAAAAAAAKAKAAAAAAAAAAgAigCgAAAAABIAAAgAgAAAAAAAAAAAAACgCgAAAAAAICgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAIsAEhIAAiAAAACwAACgAIAIAAAApICoogigChIAiwAAAAAIAIAAAAAAoAoAAAAAAAAAAAAAAAACAoAAAAAIAIAAAAAAAACwAACgAAAAEgCAigAgAAAKAKAAASAIsAAAAAAAAAAAAAAAAAAAASAICAAAAAAAAAAKBIoICKIsCgAAAIAIAACwAAAASAEAoAAAAACAsCEACoAIoAoAAAAAAAAAAAAAASAILKCCwQAACgAIAIAACwAACgAAAAAAAAEgCAgAAAAAALAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAgAAAAAAsIAqAAACgCgAAAIAIoEAgAAAKAKAAAgKAAAACAACKAKAAAAAAAAAAAAAAEgCLJKCLAQCgAAAIAIAAAAoAoAAAABIAAgQAIAAAACwBAAoACACAAKAKAAASAgCKAKAAAAAAAAASAIsAASAAIiooIAAAALAAAKgAgAAACgQAAKAAACILAAAKAAAAEgCLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAgAALAAAKAAAAAgAAgACgCoCwIgqAoAoACACAAKBAAAoiggAKAAAAAAAAASAICAAAAAAAAAAAAKAKAAAAgAgAAACgCgAAAAAAEgEoCCwiwAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAgACgCgAAABISCACAAAAKAKAAAAAAAAAAgAgACgCgAAAAAAAAAAAAAAAIAILCAKEAoACACLAgCgCgACKCIAACwBAAoAAAAAAAASEgEhIgAAAKAAAAASAIsAAAAAASAIsAAgKAABICAIoAoAAAAAAAAACACAAKAKAAAAAAIoIgAAAKAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAiwIAoAoBAgAKAAAAAAAAgAgACggqgAAAAAAAIqCALAIKgKAKAAASAIsAAAAAAAAAAgAAgACgSKCLAAAAAAAAAAAAAIAICwAACgAAAAAAIAAICwAACgEgCAigCgAAAA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
+    <style>
+      :root {
+        --void: #070909;
+        --night: #101514;
+        --deep: #17221f;
+        --moss: #2e4e3f;
+        --mist: #b8c8b6;
+        --bone: #f5f1df;
+        --muted: #9aa79d;
+        --gold: #d9ad4a;
+        --ember: #b75646;
+        --steel: #78909c;
+        --line: rgba(245, 241, 223, 0.13);
+        --panel: rgba(245, 241, 223, 0.055);
+        --panel-strong: rgba(245, 241, 223, 0.09);
+        --shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+        --max: 1180px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        color: var(--bone);
+        background:
+          radial-gradient(circle at 12% 0%, rgba(217, 173, 74, 0.12), transparent 28rem),
+          radial-gradient(circle at 86% 18%, rgba(183, 86, 70, 0.11), transparent 26rem),
+          linear-gradient(180deg, var(--void), #0b0f0e 42%, #101613);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.55;
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: -3;
+        pointer-events: none;
+        content: "";
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 56px 56px;
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent 74%);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 50;
+        width: 100%;
+        border-bottom: 1px solid rgba(245, 241, 223, 0.08);
+        background: rgba(7, 9, 9, 0.74);
+        backdrop-filter: blur(18px);
+      }
+
+      .nav-shell {
+        display: flex;
+        width: min(100% - 32px, var(--max));
+        min-height: 72px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 22px;
+        margin: 0 auto;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid rgba(217, 173, 74, 0.56);
+        border-radius: 50%;
+        color: var(--gold);
+        background: rgba(217, 173, 74, 0.08);
+        font-family: Georgia, serif;
+      }
+
+      .brand-text {
+        display: grid;
+        gap: 1px;
+      }
+
+      .brand-text strong {
+        font-size: 0.98rem;
+        line-height: 1;
+      }
+
+      .brand-text span {
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: clamp(12px, 2.4vw, 28px);
+        color: rgba(245, 241, 223, 0.78);
+        font-size: 0.86rem;
+        font-weight: 800;
+      }
+
+      .site-nav a {
+        position: relative;
+        padding: 8px 0;
+      }
+
+      .site-nav a::after {
+        position: absolute;
+        right: 0;
+        bottom: 3px;
+        left: 0;
+        height: 1px;
+        content: "";
+        background: var(--gold);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 180ms ease;
+      }
+
+      .site-nav a:hover,
+      .site-nav a.is-active {
+        color: var(--bone);
+      }
+
+      .site-nav a:hover::after,
+      .site-nav a.is-active::after {
+        transform: scaleX(1);
+      }
+
+      main {
+        overflow: hidden;
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        min-height: 90svh;
+        align-items: end;
+        padding: 128px 0 56px;
+        isolation: isolate;
+      }
+
+      .hero-media {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background: #0a0d0c;
+      }
+
+      .hero-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.54;
+        filter: saturate(0.94) contrast(1.06);
+      }
+
+      .hero-media::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background:
+          linear-gradient(90deg, rgba(7, 9, 9, 0.94) 0%, rgba(7, 9, 9, 0.66) 42%, rgba(7, 9, 9, 0.26) 100%),
+          linear-gradient(180deg, rgba(7, 9, 9, 0.24) 0%, rgba(7, 9, 9, 0.55) 72%, rgba(7, 9, 9, 1) 100%);
+      }
+
+      .hero-shell,
+      .section-shell {
+        width: min(100% - 32px, var(--max));
+        margin: 0 auto;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.55fr);
+        gap: clamp(28px, 6vw, 84px);
+        align-items: end;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 18px;
+        color: var(--gold);
+        font-size: 0.76rem;
+        font-weight: 900;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 38px;
+        height: 1px;
+        content: "";
+        background: currentColor;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 820px;
+        margin-bottom: 20px;
+        font-size: clamp(4.2rem, 12vw, 9.8rem);
+        line-height: 0.84;
+        letter-spacing: 0;
+      }
+
+      .hero-copy {
+        max-width: 680px;
+        margin-bottom: 0;
+        color: rgba(245, 241, 223, 0.8);
+        font-size: clamp(1.08rem, 2.2vw, 1.5rem);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 34px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(245, 241, 223, 0.16);
+        border-radius: 8px;
+        padding: 0 18px;
+        font-weight: 900;
+        transition:
+          transform 180ms ease,
+          border-color 180ms ease,
+          background 180ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+      }
+
+      .button.primary {
+        color: #11100c;
+        border-color: var(--gold);
+        background: var(--gold);
+      }
+
+      .button.secondary {
+        color: var(--bone);
+        background: rgba(245, 241, 223, 0.08);
+      }
+
+      .status-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px;
+        background: rgba(7, 9, 9, 0.54);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+      }
+
+      .status-panel h2 {
+        margin-bottom: 18px;
+        font-size: 0.9rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .status-list {
+        display: grid;
+        gap: 16px;
+        margin: 0;
+      }
+
+      .status-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        border-bottom: 1px solid rgba(245, 241, 223, 0.1);
+        padding-bottom: 14px;
+      }
+
+      .status-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .status-row dt {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 800;
+      }
+
+      .status-row dd {
+        margin: 0;
+        color: var(--bone);
+        font-weight: 900;
+        text-align: right;
+      }
+
+      .section {
+        position: relative;
+        padding: clamp(72px, 10vw, 132px) 0;
+      }
+
+      .section.alt {
+        background: rgba(245, 241, 223, 0.035);
+      }
+
+      .section-header {
+        max-width: 840px;
+        margin-bottom: 38px;
+      }
+
+      .section-header h2 {
+        margin-bottom: 16px;
+        font-size: clamp(2.2rem, 5vw, 5rem);
+        line-height: 0.96;
+        letter-spacing: 0;
+      }
+
+      .section-header p,
+      .large-copy {
+        color: rgba(245, 241, 223, 0.72);
+        font-size: clamp(1rem, 1.6vw, 1.2rem);
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1fr);
+        gap: clamp(28px, 6vw, 86px);
+        align-items: center;
+      }
+
+      .visual-frame {
+        position: relative;
+        min-height: 420px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(217, 173, 74, 0.12), rgba(120, 144, 156, 0.1)),
+          #0d1211;
+        box-shadow: var(--shadow);
+      }
+
+      .visual-frame img {
+        width: 100%;
+        height: 100%;
+        min-height: inherit;
+        object-fit: cover;
+      }
+
+      .visual-frame::after {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.36));
+      }
+
+      .visual-frame.is-missing {
+        display: grid;
+        place-items: center;
+      }
+
+      .visual-frame.is-missing::before {
+        color: rgba(245, 241, 223, 0.66);
+        content: "KealCrow concept art";
+        font-size: 0.86rem;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .pillar-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .pillar {
+        min-height: 210px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px;
+        background: var(--panel);
+      }
+
+      .pillar span {
+        display: inline-flex;
+        margin-bottom: 34px;
+        color: var(--gold);
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+      }
+
+      .pillar h3 {
+        margin-bottom: 10px;
+        font-size: 1.08rem;
+      }
+
+      .pillar p {
+        margin-bottom: 0;
+        color: rgba(245, 241, 223, 0.64);
+        font-size: 0.96rem;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 16px;
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 170px minmax(0, 1fr);
+        gap: 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px;
+        background: var(--panel);
+      }
+
+      .timeline-date {
+        color: var(--gold);
+        font-weight: 950;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .timeline-item h3 {
+        margin-bottom: 8px;
+      }
+
+      .timeline-item p {
+        margin-bottom: 0;
+        color: rgba(245, 241, 223, 0.66);
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+
+      .gallery figure {
+        position: relative;
+        min-height: 270px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #0d1211;
+      }
+
+      .gallery figure:nth-child(1),
+      .gallery figure:nth-child(4) {
+        grid-column: span 7;
+      }
+
+      .gallery figure:nth-child(2),
+      .gallery figure:nth-child(3) {
+        grid-column: span 5;
+      }
+
+      .gallery img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 420ms ease;
+      }
+
+      .gallery figure:hover img {
+        transform: scale(1.035);
+      }
+
+      .gallery figcaption {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        left: 14px;
+        border: 1px solid rgba(245, 241, 223, 0.12);
+        border-radius: 8px;
+        padding: 12px 14px;
+        color: rgba(245, 241, 223, 0.82);
+        background: rgba(7, 9, 9, 0.72);
+        backdrop-filter: blur(12px);
+        font-size: 0.88rem;
+        font-weight: 850;
+      }
+
+      .community {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.68fr);
+        gap: clamp(28px, 5vw, 72px);
+        align-items: start;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: clamp(28px, 5vw, 54px);
+        background:
+          linear-gradient(135deg, rgba(217, 173, 74, 0.1), rgba(183, 86, 70, 0.08)),
+          var(--panel);
+      }
+
+      .community h2 {
+        margin-bottom: 12px;
+        font-size: clamp(2rem, 4vw, 4.4rem);
+        line-height: 0.98;
+      }
+
+      .community p {
+        max-width: 720px;
+        margin-bottom: 0;
+        color: rgba(245, 241, 223, 0.7);
+        font-size: 1.05rem;
+      }
+
+      .link-stack {
+        display: grid;
+        gap: 10px;
+      }
+
+      .link-stack a,
+      .link-stack span {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        border: 1px solid rgba(245, 241, 223, 0.14);
+        border-radius: 8px;
+        padding: 15px 16px;
+        background: rgba(7, 9, 9, 0.24);
+        color: var(--bone);
+        font-weight: 900;
+      }
+
+      .link-stack small {
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .site-footer {
+        border-top: 1px solid var(--line);
+        padding: 28px 0;
+        color: rgba(245, 241, 223, 0.58);
+      }
+
+      .footer-shell {
+        display: flex;
+        width: min(100% - 32px, var(--max));
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 0 auto;
+        font-size: 0.9rem;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 620ms ease,
+          transform 620ms ease;
+      }
+
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 920px) {
+        .hero-grid,
+        .split,
+        .community {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-bottom: 42px;
+        }
+
+        .status-panel {
+          max-width: 520px;
+        }
+
+        .pillar-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .gallery figure:nth-child(n) {
+          grid-column: span 6;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .nav-shell {
+          min-height: 66px;
+        }
+
+        .brand-text span {
+          display: none;
+        }
+
+        .site-nav {
+          gap: 12px;
+          font-size: 0.78rem;
+        }
+
+        .site-nav a:nth-child(2),
+        .site-nav a:nth-child(3) {
+          display: none;
+        }
+
+        .hero-shell,
+        .section-shell,
+        .footer-shell {
+          width: min(100% - 24px, var(--max));
+        }
+
+        h1 {
+          font-size: clamp(3.4rem, 19vw, 6.2rem);
+        }
+
+        .hero-copy {
+          font-size: 1.04rem;
+        }
+
+        .hero-actions,
+        .button {
+          width: 100%;
+        }
+
+        .pillar-grid,
+        .timeline-item,
+        .gallery {
+          grid-template-columns: 1fr;
+        }
+
+        .gallery figure:nth-child(n) {
+          grid-column: auto;
+        }
+
+        .visual-frame,
+        .gallery figure {
+          min-height: 330px;
+        }
+
+        .footer-shell {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="nav-shell">
+        <a class="brand" href="#home" aria-label="KealCrow Interactive home">
+          <span class="brand-mark" aria-hidden="true">K</span>
+          <span class="brand-text">
+            <strong>KealCrow</strong>
+            <span>Interactive</span>
+          </span>
+        </a>
+
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="#vision">Vision</a>
+          <a href="#archive">Archive</a>
+          <a href="#media">Media</a>
+          <a href="#community">Community</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="home">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true">
+          <img src="./image-3.jpg" alt="" />
+        </div>
+
+        <div class="hero-shell">
+          <div class="hero-grid">
+            <div>
+              <p class="eyebrow">An indie universe in early development</p>
+              <h1 id="hero-title">KealCrow</h1>
+              <p class="hero-copy">
+                A dark pixel-art universe where the forest remembers, and the
+                crown is never silent.
+              </p>
+              <div class="hero-actions" aria-label="Project links">
+                <a class="button primary" href="#archive">Read the development log</a>
+                <a class="button secondary" href="#media">View concept media</a>
+              </div>
+            </div>
+
+            <aside class="status-panel reveal" aria-label="Current project status">
+              <h2>Current Status</h2>
+              <dl class="status-list">
+                <div class="status-row">
+                  <dt>Stage</dt>
+                  <dd>Day 1</dd>
+                </div>
+                <div class="status-row">
+                  <dt>Focus</dt>
+                  <dd>World foundation</dd>
+                </div>
+                <div class="status-row">
+                  <dt>Build</dt>
+                  <dd>Not public yet</dd>
+                </div>
+                <div class="status-row">
+                  <dt>Studio</dt>
+                  <dd>KealCrow Interactive</dd>
+                </div>
+              </dl>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="vision" aria-labelledby="vision-title">
+        <div class="section-shell split">
+          <div class="section-header reveal">
+            <p class="eyebrow">Creative Vision</p>
+            <h2 id="vision-title">A world built from silence, symbols, and shadow.</h2>
+            <p>
+              KealCrow is being shaped as a narrative-driven pixel-art project
+              with a slow, deliberate atmosphere. Its identity begins with a
+              black bird, a crown, and a forest that feels older than memory.
+            </p>
+            <p class="large-copy">
+              The goal is to build a credible long-term universe: emotionally
+              precise, visually recognizable, and honest about its early stage.
+            </p>
+          </div>
+
+          <figure class="visual-frame reveal">
+            <img
+              src="./copilot_image_1782744561621.jpeg"
+              alt="Pixel-art raven standing in a mysterious forest"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="section alt" aria-labelledby="pillars-title">
+        <div class="section-shell">
+          <div class="section-header reveal">
+            <p class="eyebrow">World Pillars</p>
+            <h2 id="pillars-title">The foundation of KealCrow.</h2>
+          </div>
+
+          <div class="pillar-grid">
+            <article class="pillar reveal">
+              <span>01</span>
+              <h3>Atmospheric Pixel Art</h3>
+              <p>
+                A visual direction rooted in dense forests, soft light, dark
+                silhouettes, and restrained cinematic composition.
+              </p>
+            </article>
+            <article class="pillar reveal">
+              <span>02</span>
+              <h3>Narrative Discovery</h3>
+              <p>
+                Storytelling designed around fragments, implication, and places
+                that communicate before they explain.
+              </p>
+            </article>
+            <article class="pillar reveal">
+              <span>03</span>
+              <h3>Symbolic Identity</h3>
+              <p>
+                Crow, crown, forest, gold, ruin, and memory form the first
+                language of the world.
+              </p>
+            </article>
+            <article class="pillar reveal">
+              <span>04</span>
+              <h3>Public Evolution</h3>
+              <p>
+                The project will grow through visible logs, careful milestones,
+                and transparent early development.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="archive" aria-labelledby="archive-title">
+        <div class="section-shell">
+          <div class="section-header reveal">
+            <p class="eyebrow">Development Archive</p>
+            <h2 id="archive-title">A record of the world becoming real.</h2>
+            <p>
+              KealCrow begins publicly at Day 1. The archive will document the
+              decisions, revisions, ideas, and technical steps that shape the
+              project over time.
+            </p>
+          </div>
+
+          <div class="timeline">
+            <article class="timeline-item reveal">
+              <div class="timeline-date">Day 1</div>
+              <div>
+                <h3>Public foundation</h3>
+                <p>
+                  Establish the project identity, define the first visual tone,
+                  publish the official repository presence, and prepare the
+                  development log structure.
+                </p>
+              </div>
+            </article>
+            <article class="timeline-item reveal">
+              <div class="timeline-date">Next</div>
+              <div>
+                <h3>World and style exploration</h3>
+                <p>
+                  Expand environment studies, refine the symbolic language, and
+                  begin documenting lore fragments with production notes.
+                </p>
+              </div>
+            </article>
+            <article class="timeline-item reveal">
+              <div class="timeline-date">Later</div>
+              <div>
+                <h3>Prototype research</h3>
+                <p>
+                  Explore interaction models, gameplay rhythm, technical scope,
+                  and the first internal playable experiments.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="media" aria-labelledby="media-title">
+        <div class="section-shell">
+          <div class="section-header reveal">
+            <p class="eyebrow">Concept Media</p>
+            <h2 id="media-title">Early visual direction.</h2>
+            <p>
+              These images represent current atmosphere, identity, and concept
+              direction. They are early materials, not final production assets.
+            </p>
+          </div>
+
+          <div class="gallery">
+            <figure class="reveal">
+              <img
+                src="./copilot_image_1782744561621.jpeg"
+                alt="KealCrow raven key visual"
+              />
+              <figcaption>Raven key visual</figcaption>
+            </figure>
+            <figure class="reveal">
+              <img src="./copilot_image_1782653053643.jpeg" alt="KealCrow logo study" />
+              <figcaption>Logo identity study</figcaption>
+            </figure>
+            <figure class="reveal">
+              <img src="./image_1782747669682.jpeg" alt="KealCrow forest mood study" />
+              <figcaption>Forest mood study</figcaption>
+            </figure>
+            <figure class="reveal">
+              <img src="./IMG_20260629_160301.png" alt="KealCrow Day 1 development card" />
+              <figcaption>Day 1 public archive card</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="community" aria-labelledby="community-title">
+        <div class="section-shell">
+          <div class="community reveal">
+            <div>
+              <p class="eyebrow">Community</p>
+              <h2 id="community-title">Built slowly. Built in public.</h2>
+              <p>
+                KealCrow is in its earliest public phase. Community channels
+                will open gradually as the project develops enough substance for
+                meaningful updates, discussion, and feedback.
+              </p>
+            </div>
+
+            <div class="link-stack" aria-label="Community links">
+              <a href="https://github.com/KealCrow-Interactive/kealcrow-interactive.github.io">
+                GitHub <small>Repository</small>
+              </a>
+              <a href="https://kealcrow-interactive.github.io">
+                Website <small>Public page</small>
+              </a>
+              <span>
+                Discord <small>Coming soon</small>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <span>KealCrow Interactive</span>
+        <span>&copy; 2026. Early development archive.</span>
+      </div>
+    </footer>
+
+    <script>
+      const revealItems = document.querySelectorAll(".reveal");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+
+      const sections = [...document.querySelectorAll("main section[id]")];
+      const navLinks = [...document.querySelectorAll(".site-nav a")];
+      const navObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach((link) => {
+              link.classList.toggle(
+                "is-active",
+                link.getAttribute("href") === `#${entry.target.id}`
+              );
+            });
+          });
+        },
+        { rootMargin: "-35% 0px -58% 0px" }
+      );
+
+      sections.forEach((section) => navObserver.observe(section));
+
+      document.querySelectorAll("img").forEach((image) => {
+        image.addEventListener("error", () => {
+          const frame = image.closest(".visual-frame, figure");
+          if (frame) frame.classList.add("is-missing");
+          image.remove();
+        });
+      });
+    </script>
+  </body>
+</html>
